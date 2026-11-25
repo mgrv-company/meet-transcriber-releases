@@ -35,7 +35,7 @@ jobs:
 
   mac:
     needs: tools-test
-    runs-on: macos-14
+    runs-on: macos-latest
     timeout-minutes: 30
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -116,7 +116,7 @@ jobs:
           set "RUSTFLAGS=--remap-path-prefix=%USERPROFILE%=/home --remap-path-prefix=%GITHUB_WORKSPACE%=/build --remap-path-prefix=%RUSTUP_HOME%=/rustup --remap-path-prefix=%CARGO_HOME%=/cargo -C link-arg=/PDBALTPATH:%%_PDB%%"
           set "PREFIX_MAP=-ffile-prefix-map=%USERPROFILE%=/home -ffile-prefix-map=%GITHUB_WORKSPACE%=/build -ffile-prefix-map=%CARGO_HOME%=/cargo"
           set "CFLAGS=%PREFIX_MAP%"
-          set "CXXFLAGS=%PREFIX_MAP%"
+          set "CXXFLAGS=%PREFIX_MAP% /EHsc /GR"
           echo build start %DATE% %TIME%
           cargo build --release --locked --features vulkan || exit /b 1
           echo build end %DATE% %TIME%
