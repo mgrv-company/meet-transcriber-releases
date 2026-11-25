@@ -1,0 +1,29 @@
+[package]
+name = "meet-transcriber"
+version = "0.1.0"
+edition = "2021"
+license = "UNLICENSED"
+publish = false
+description = "표준 입출력 줄 JSON으로 소리 조각을 받아 글을 돌려주는 로컬 전사 프로그램(whisper.cpp)"
+
+[[bin]]
+name = "meet-transcriber"
+path = "src/main.rs"
+
+[features]
+default = []
+# OS마다 하나를 켜서 빌드한다(macOS는 metal, Windows는 vulkan). GPU 없이 빌드하면 ready가 unavailable을 알린다.
+metal = ["whisper-rs/metal"]
+vulkan = ["whisper-rs/vulkan"]
+
+[dependencies]
+# raw-api: GPU 장치 목록(engine/gpu.rs)을 읽는 데 쓴다
+# log_backend: whisper.cpp와 ggml이 stderr로 직접 내던 로그를 `log`로 받을 수 있게 한다
+whisper-rs = { version = "0.16", features = ["raw-api", "log_backend"] }
+thiserror = "2"
+serde = { version = "=1.0.229", features = ["derive"] }
+serde_json = "=1.0.154"
+base64 = "=0.23.1"
+
+[profile.release]
+lto = "thin"
